@@ -8,6 +8,9 @@ const MainPage = () => {
       <p>gsosdgns</p>
       <p>gsdgsodngiosdgns</p>
       <p>gsdgsodgiosdgns</p>
+      <p>gsdgsodgiosdgns</p>
+      <p>gsdgsodgiosdgns</p>
+      <p>gsdgsodgiosdgns</p>
     </form>
   )
 }
