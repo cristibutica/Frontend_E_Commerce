@@ -8,7 +8,7 @@ const MatchPasswordField = ({ password, matchPassword, setMatchPassword, validMa
     const handleClickShowPassword = () => setShowPassword((show) => !show);
 
     return (
-        <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined">
+        <FormControl sx={{ m: 1, width: "100%" }} variant="outlined">
             <InputLabel htmlFor="confirm-password">Confirm Password</InputLabel>
             <OutlinedInput
                 id="confirm-password"

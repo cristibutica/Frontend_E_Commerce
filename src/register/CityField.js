@@ -41,7 +41,7 @@ const CityField = ({ cities, setCities, selectedRegionCode, selectedCity, setSel
     }
 
     return (
-        <TextField
+        <TextField sx={{ m: 1, width: "50%" }}
             id="city-field"
             select
             required

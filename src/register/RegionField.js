@@ -14,7 +14,7 @@ const RegionField = ({ regions, selectedRegion, setSelectedRegion, setSelectedRe
   }
 
   return (
-    <TextField
+    <TextField sx={{ m: 1, width: "50%" }}
       id="region-field"
       select
       required

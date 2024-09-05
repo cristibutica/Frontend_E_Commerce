@@ -7,6 +7,7 @@ import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import Alert from '@mui/material/Alert';
 import UserField from './UserField';
 import NameField from './NameField';
 import EmailField from './EmailField';
@@ -18,7 +19,7 @@ import CityField from './CityField';
 import MatchPasswordField from './MatchPasswordField';
 import DateField from './DateField';
 
-const firstAndLastNameRegex = /^[A-Z][a-z]{3,23}$/;
+const firstAndLastNameRegex = /^[A-Z][a-z]{2,23}$/;
 const userRegex = /^[a-zA-Z][a-zA-Z0-9-_]{3,23}$/;
 const emailRegex = /^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$/;
 const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
@@ -65,6 +66,7 @@ const Register = () => {
 
     const [errMsg, setErrMsg] = useState('');
     const [succes, setSucces] = useState(false);
+    const [displayInfoBox, setDisplayInfoBox] = useState(false);
 
     useEffect(() => {
         userRef.current.focus();
@@ -120,36 +122,40 @@ const Register = () => {
 
     const handleRegistration = async (e) => {
         e.preventDefault();
-        try {
-            const response = await axios.post(registerURL,
-                JSON.stringify({
-                    firstName: firstName,
-                    lastName: lastName,
-                    username: user,
-                    email: email,
-                    password: pwd,
-                    dateOfBirth: date,
-                    region: selectedRegion,
-                    city: selectedCity,
-                    street: ""
-                }),
-                {
-                    headers: { 'Content-Type': 'application/json' },
-                    withCredentials: true
-                }
-            );
+
+        axios.post(registerURL,
+            JSON.stringify({
+                firstName: firstName,
+                lastName: lastName,
+                username: user,
+                email: email,
+                password: pwd,
+                dateOfBirth: date,
+                region: selectedRegion,
+                city: selectedCity,
+                street: ""
+            }),
+            {
+                headers: { 'Content-Type': 'application/json' },
+                withCredentials: true
+            }
+        ).then(response => {
             console.log(response.data);
             setSucces(true);
-        } catch (err) {
+        }).catch(err => {
+            setSucces(false);
+            console.log(err);
             if (!err?.response) {
                 setErrMsg('No Server Response');
-            } else if (err.response?.status === 409)
-                setErrMsg('Username taken');
+            } else if (err.response?.data) {
+                setErrMsg(err.response.data);
+            }
             else {
                 setErrMsg('Registration Failed');
             }
-            errRef.current.focus();
-        }
+        })
+        setDisplayInfoBox(true);
+        // errRef.current.focus();
     }
 
     return (
@@ -164,7 +170,7 @@ const Register = () => {
                     padding: 3,
                 }}
             >
-                <Paper elevation={3} sx={{ padding: 4, maxWidth: 320, width: '100%' }}>
+                <Paper elevation={3} sx={{ padding: 4, maxWidth: 450, width: '100%' }}>
                     <Typography variant="h5" gutterBottom>
                         Register
                     </Typography>
@@ -218,23 +224,34 @@ const Register = () => {
                                 matchPasswordFocus={matchPwdFocus}
                                 setMatchPasswordFocus={setMatchPwdFocus}
                             />
-                            <RegionField
-                                regions={regions}
-                                selectedRegion={selectedRegion}
-                                setSelectedRegion={setSelectedRegion}
-                                setSelectedRegionCode={setSelectedRegionCode}
-                            />
-                            <CityField
-                                cities={cities}
-                                setCities={setCities}
-                                selectedRegionCode={selectedRegionCode}
-                                selectedCity={selectedCity}
-                                setSelectedCity={setSelectedCity}
-                            />
+                            <Stack direction="row" spacing={2}>
+                                <RegionField
+                                    regions={regions}
+                                    selectedRegion={selectedRegion}
+                                    setSelectedRegion={setSelectedRegion}
+                                    setSelectedRegionCode={setSelectedRegionCode}
+                                />
+                                <CityField
+                                    cities={cities}
+                                    setCities={setCities}
+                                    selectedRegionCode={selectedRegionCode}
+                                    selectedCity={selectedCity}
+                                    setSelectedCity={setSelectedCity}
+                                />
+
+                            </Stack>
+
                             <DateField
                                 date={date}
                                 setDate={setDate}
                             />
+                            {displayInfoBox &&
+                                <Alert
+
+                                    severity={succes ? "success" : "error"}
+                                >
+                                    {succes ? "Successfully registered" : "Failed registration"}
+                                </Alert>}
                             <Button
                                 variant='contained'
                                 disabled={
@@ -251,12 +268,12 @@ const Register = () => {
                             >
                                 Register
                             </Button>
+
                         </Stack>
                     </Box>
                 </Paper>
             </Box>
         </LocalizationProvider>
     );
-};
-
+}
 export default Register;

@@ -8,7 +8,7 @@ const PasswordField = ({ password, setPassword, validPassword, passwordFocus, se
     const handleClickShowPassword = () => setShowPassword((show) => !show);
 
     return (
-        <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined">
+        <FormControl sx={{ m: 1, width: "100%" }} variant="outlined">
             <InputLabel htmlFor="password">Password</InputLabel>
             <OutlinedInput
                 id="password"
