@@ -3,7 +3,11 @@ import React from 'react'
 const MainPage = () => {
   return (
     <form>
-      <p>Bravo ba esti bun iele fratele meu</p>
+      <p>gsdgsodngiosdgns</p>
+      <p>gsdgsongiosdgns</p>
+      <p>gsosdgns</p>
+      <p>gsdgsodngiosdgns</p>
+      <p>gsdgsodgiosdgns</p>
     </form>
   )
 }
