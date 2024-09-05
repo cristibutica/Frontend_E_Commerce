@@ -4,9 +4,7 @@ const MainPage = () => {
   return (
     <form>
       <p>gsdgsodngiosdgns</p>
-      <p>gsdgsongiosdgns</p>
-      <p>gsosdgns</p>
-      <p>gsdgsodngiosdgns</p>
+      <form><p>asdfgasfafasfgasas</p></form>
       <p>gsdgsodgiosdgns</p>
     </form>
   )
