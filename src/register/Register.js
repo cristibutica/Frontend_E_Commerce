@@ -4,15 +4,25 @@ import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
+import Button from '@mui/material/Button';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import UserField from './UserField';
 import NameField from './NameField';
 import EmailField from './EmailField';
 import PasswordField from './PasswordField';
+import RegionField from './RegionField'
+import api from './api/location';
+import axios from './api/axios'
+import CityField from './CityField';
+import MatchPasswordField from './MatchPasswordField';
+import DateField from './DateField';
 
 const firstAndLastNameRegex = /^[A-Z][a-z]{3,23}$/;
 const userRegex = /^[a-zA-Z][a-zA-Z0-9-_]{3,23}$/;
 const emailRegex = /^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$/;
 const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
+const registerURL = '/register'
 
 const Register = () => {
     const userRef = useRef();
@@ -41,6 +51,17 @@ const Register = () => {
     const [matchPwd, setMatchPwd] = useState('');
     const [validMatchPwd, setValidMatchPwd] = useState(false);
     const [matchPwdFocus, setMatchPwdFocus] = useState(false);
+
+    const [regions, setRegions] = useState([]);
+    const [selectedRegion, setSelectedRegion] = useState('');
+    const [selectedRegionCode, setSelectedRegionCode] = useState('');
+
+    const [cities, setCities] = useState([]);
+    const [selectedCity, setSelectedCity] = useState('');
+
+    // month apparently starts from 0 so pay attention
+    // $D, $M, $y
+    const [date, setDate] = useState(null);
 
     const [errMsg, setErrMsg] = useState('');
     const [succes, setSucces] = useState(false);
@@ -74,67 +95,167 @@ const Register = () => {
         setErrMsg('');
     }, [user, firstName, lastName, email, pwd, matchPwd]);
 
+    // for regions
+    useEffect(() => {
+        const fetchRegions = async () => {
+            try {
+                const response = await api.get(`judete`);
+                setRegions(response.data);
+                console.log(regions);
+
+            } catch (err) {
+                if (err.response) {
+                    // Not in the 200 response range
+                    // console.log(err.response.data);
+                    // console.log(err.response.status);
+                    // console.log(err.response.headers);
+                } else {
+                    console.log(`Error: ${err.message}`);
+                }
+            }
+        }
+
+        fetchRegions();
+    }, [])
+
+    const handleRegistration = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await axios.post(registerURL,
+                JSON.stringify({
+                    firstName: firstName,
+                    lastName: lastName,
+                    username: user,
+                    email: email,
+                    password: pwd,
+                    dateOfBirth: date,
+                    region: selectedRegion,
+                    city: selectedCity,
+                    street: ""
+                }),
+                {
+                    headers: { 'Content-Type': 'application/json' },
+                    withCredentials: true
+                }
+            );
+            console.log(response.data);
+            setSucces(true);
+        } catch (err) {
+            if (!err?.response) {
+                setErrMsg('No Server Response');
+            } else if (err.response?.status === 409)
+                setErrMsg('Username taken');
+            else {
+                setErrMsg('Registration Failed');
+            }
+            errRef.current.focus();
+        }
+    }
+
     return (
-        <Box
-            sx={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                minHeight: '100vh',
-                backgroundColor: '#f5f5f5',
-                padding: 3,
-            }}
-        >
-            <Paper elevation={3} sx={{ padding: 4, maxWidth: 350, width: '100%' }}>
-                <Typography variant="h5" gutterBottom>
-                    Register
-                </Typography>
-                <Box component="form" noValidate autoComplete="off">
-                    <Stack spacing={2}>
-                        <UserField
-                            userRef={userRef}
-                            user={user}
-                            setUser={setUser}
-                            validUser={validUser}
-                            userFocus={userFocus}
-                            setUserFocus={setUserFocus}
-                        />
-                        <Stack direction="row" spacing={2}>
-                            <NameField
-                                name={firstName}
-                                setName={setFirstName}
-                                validName={validFirstName}
-                                nameFocus={firstNameFocus}
-                                setNameFocus={setFirstNameFocus}
-                                nameType={'first'}
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <Box
+                sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    minHeight: '100vh',
+                    backgroundColor: '#f5f5f5',
+                    padding: 3,
+                }}
+            >
+                <Paper elevation={3} sx={{ padding: 4, maxWidth: 320, width: '100%' }}>
+                    <Typography variant="h5" gutterBottom>
+                        Register
+                    </Typography>
+                    <Box component="form" noValidate autoComplete="off">
+                        <Stack spacing={2}>
+                            <UserField
+                                userRef={userRef}
+                                user={user}
+                                setUser={setUser}
+                                validUser={validUser}
+                                userFocus={userFocus}
+                                setUserFocus={setUserFocus}
                             />
-                            <NameField
-                                name={lastName}
-                                setName={setLastName}
-                                validName={validLastName}
-                                nameFocus={lastNameFocus}
-                                setNameFocus={setLastNameFocus}
-                                nameType={'last'}
+                            <Stack direction="row" spacing={2}>
+                                <NameField
+                                    name={firstName}
+                                    setName={setFirstName}
+                                    validName={validFirstName}
+                                    nameFocus={firstNameFocus}
+                                    setNameFocus={setFirstNameFocus}
+                                    nameType={'first'}
+                                />
+                                <NameField
+                                    name={lastName}
+                                    setName={setLastName}
+                                    validName={validLastName}
+                                    nameFocus={lastNameFocus}
+                                    setNameFocus={setLastNameFocus}
+                                    nameType={'last'}
+                                />
+                            </Stack>
+                            <EmailField
+                                email={email}
+                                setEmail={setEmail}
+                                validEmail={validEmail}
+                                emailFocus={emailFocus}
+                                setEmailFocus={setEmailFocus}
                             />
+                            <PasswordField
+                                password={pwd}
+                                setPassword={setPwd}
+                                validPassword={validPwd}
+                                passwordFocus={pwdFocus}
+                                setPasswordFocus={setPwdFocus}
+                            />
+                            <MatchPasswordField
+                                password={pwd}
+                                matchPassword={matchPwd}
+                                setMatchPassword={setMatchPwd}
+                                validMatchPassword={validMatchPwd}
+                                matchPasswordFocus={matchPwdFocus}
+                                setMatchPasswordFocus={setMatchPwdFocus}
+                            />
+                            <RegionField
+                                regions={regions}
+                                selectedRegion={selectedRegion}
+                                setSelectedRegion={setSelectedRegion}
+                                setSelectedRegionCode={setSelectedRegionCode}
+                            />
+                            <CityField
+                                cities={cities}
+                                setCities={setCities}
+                                selectedRegionCode={selectedRegionCode}
+                                selectedCity={selectedCity}
+                                setSelectedCity={setSelectedCity}
+                            />
+                            <DateField
+                                date={date}
+                                setDate={setDate}
+                            />
+                            <Button
+                                variant='contained'
+                                disabled={
+                                    Boolean(!validUser ||
+                                        !validFirstName ||
+                                        !validLastName ||
+                                        !validEmail ||
+                                        !validPwd ||
+                                        !validMatchPwd ||
+                                        !selectedRegion ||
+                                        !selectedCity ||
+                                        !date)}
+                                onClick={handleRegistration}
+                            >
+                                Register
+                            </Button>
                         </Stack>
-                        <EmailField
-                            email={email}
-                            setEmail={setEmail}
-                            validEmail={validEmail}
-                            emailFocus={emailFocus}
-                            setEmailFocus={setEmailFocus}
-                        />
-                        <PasswordField
-                            password={pwd}
-                            setPassword={setPwd}
-                            validPassword={validPwd}
-                            passwordFocus={pwdFocus}
-                            setPasswordFocus={setPwdFocus}
-                        />
-                    </Stack>
-                </Box>
-            </Paper>
-        </Box>
+                    </Box>
+                </Paper>
+            </Box>
+        </LocalizationProvider>
     );
 };
 
