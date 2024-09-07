@@ -1,9 +1,12 @@
 import Register from "./register/Register";
+import { RegisterProvider } from "./context/RegisterContext";
 
 function App() {
   return (
     <main className="App">
-      <Register/>
+      <RegisterProvider>
+        <Register />
+      </RegisterProvider>
     </main>
   );
 }

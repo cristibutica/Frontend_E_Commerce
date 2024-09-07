@@ -1,7 +1,12 @@
-import React from 'react'
+import React, { useContext, useState } from 'react'
 import TextField from '@mui/material/TextField';
+import RegisterContext from '../context/RegisterContext';
 
-const EmailField = ({ email, setEmail, validEmail, emailFocus, setEmailFocus }) => {
+const EmailField = () => {
+
+    const { email, setEmail, validEmail } = useContext(RegisterContext);
+    const [emailFocus, setEmailFocus] = useState(false);
+
     return (
         <TextField
             required

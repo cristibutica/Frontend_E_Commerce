@@ -1,11 +1,15 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import RegisterContext from '../context/RegisterContext';
 
-const DateField = ({date, setDate}) => {
+const DateField = () => {
+
+  const { date, setDate } = useContext(RegisterContext);
+
   return (
     <DatePicker
-        value={date}
-        onChange={(newDate) => setDate(newDate)}
+      value={date}
+      onChange={(newDate) => setDate(newDate)}
     >
     </DatePicker>
   )

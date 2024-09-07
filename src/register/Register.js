@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useRef, useState, useEffect } from "react";
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
@@ -12,12 +12,13 @@ import UserField from './UserField';
 import NameField from './NameField';
 import EmailField from './EmailField';
 import PasswordField from './PasswordField';
-import RegionField from './RegionField'
+import RegionField from './RegionField';
 import api from './api/location';
-import axios from './api/axios'
+import axios from './api/axios';
 import CityField from './CityField';
 import MatchPasswordField from './MatchPasswordField';
 import DateField from './DateField';
+import RegisterContext from '../context/RegisterContext';
 
 const firstAndLastNameRegex = /^[A-Z][a-z]{2,23}$/;
 const userRegex = /^[a-zA-Z][a-zA-Z0-9-_]{3,23}$/;
@@ -26,51 +27,11 @@ const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 const registerURL = '/register'
 
 const Register = () => {
-    const userRef = useRef();
-    const errRef = useRef();
-
-    const [user, setUser] = useState('');
-    const [validUser, setValidUser] = useState(false);
-    const [userFocus, setUserFocus] = useState(false);
-
-    const [firstName, setFirstName] = useState('');
-    const [validFirstName, setValidFirstName] = useState(false);
-    const [firstNameFocus, setFirstNameFocus] = useState(false);
-
-    const [lastName, setLastName] = useState('');
-    const [validLastName, setValidLastName] = useState(false);
-    const [lastNameFocus, setLastNameFocus] = useState(false);
-
-    const [email, setEmail] = useState('');
-    const [validEmail, setValidEmail] = useState(false);
-    const [emailFocus, setEmailFocus] = useState(false);
-
-    const [pwd, setPwd] = useState('');
-    const [validPwd, setValidPwd] = useState(false);
-    const [pwdFocus, setPwdFocus] = useState(false);
-
-    const [matchPwd, setMatchPwd] = useState('');
-    const [validMatchPwd, setValidMatchPwd] = useState(false);
-    const [matchPwdFocus, setMatchPwdFocus] = useState(false);
-
-    const [regions, setRegions] = useState([]);
-    const [selectedRegion, setSelectedRegion] = useState('');
-    const [selectedRegionCode, setSelectedRegionCode] = useState('');
-
-    const [cities, setCities] = useState([]);
-    const [selectedCity, setSelectedCity] = useState('');
-
-    // month apparently starts from 0 so pay attention
-    // $D, $M, $y
-    const [date, setDate] = useState(null);
+    const { userRef, user, setUser, validUser, setValidUser, firstName, setFirstName, validFirstName, setValidFirstName, lastName, setLastName, validLastName, setValidLastName, email, setEmail, validEmail, setValidEmail, password, setPassword, validPassword, setValidPassword, matchPassword, setMatchPassword, validMatchPassword, setValidMatchPassword, regions, setRegions, selectedRegion, setSelectedRegion, selectedRegionCode, setSelectedRegionCode, selectedCity, setSelectedCity, date, setDate } = useContext(RegisterContext)
 
     const [errMsg, setErrMsg] = useState('');
     const [succes, setSucces] = useState(false);
     const [displayInfoBox, setDisplayInfoBox] = useState(false);
-
-    useEffect(() => {
-        userRef.current.focus();
-    }, []);
 
     useEffect(() => {
         setValidUser(userRegex.test(user));
@@ -89,15 +50,15 @@ const Register = () => {
     }, [email]);
 
     useEffect(() => {
-        setValidPwd(passwordRegex.test(pwd));
-        setValidMatchPwd(pwd === matchPwd);
-    }, [pwd, matchPwd]);
+        setValidPassword(passwordRegex.test(password));
+        setValidMatchPassword(password === matchPassword);
+    }, [password, matchPassword]);
 
     useEffect(() => {
         setErrMsg('');
-    }, [user, firstName, lastName, email, pwd, matchPwd]);
+        setDisplayInfoBox(false);
+    }, [user, firstName, lastName, email, password, matchPassword]);
 
-    // for regions
     useEffect(() => {
         const fetchRegions = async () => {
             try {
@@ -107,10 +68,7 @@ const Register = () => {
 
             } catch (err) {
                 if (err.response) {
-                    // Not in the 200 response range
-                    // console.log(err.response.data);
-                    // console.log(err.response.status);
-                    // console.log(err.response.headers);
+                    console.log(`Error: ${err.response.data}`);
                 } else {
                     console.log(`Error: ${err.message}`);
                 }
@@ -129,7 +87,7 @@ const Register = () => {
                 lastName: lastName,
                 username: user,
                 email: email,
-                password: pwd,
+                password: password,
                 dateOfBirth: date,
                 region: selectedRegion,
                 city: selectedCity,
@@ -142,7 +100,9 @@ const Register = () => {
         ).then(response => {
             console.log(response.data);
             setSucces(true);
+            setDisplayInfoBox(true);
         }).catch(err => {
+            setDisplayInfoBox(true);
             setSucces(false);
             console.log(err);
             if (!err?.response) {
@@ -154,8 +114,7 @@ const Register = () => {
                 setErrMsg('Registration Failed');
             }
         })
-        setDisplayInfoBox(true);
-        // errRef.current.focus();
+        
     }
 
     return (
@@ -176,81 +135,22 @@ const Register = () => {
                     </Typography>
                     <Box component="form" noValidate autoComplete="off">
                         <Stack spacing={2}>
-                            <UserField
-                                userRef={userRef}
-                                user={user}
-                                setUser={setUser}
-                                validUser={validUser}
-                                userFocus={userFocus}
-                                setUserFocus={setUserFocus}
-                            />
+                            <UserField />
                             <Stack direction="row" spacing={2}>
-                                <NameField
-                                    name={firstName}
-                                    setName={setFirstName}
-                                    validName={validFirstName}
-                                    nameFocus={firstNameFocus}
-                                    setNameFocus={setFirstNameFocus}
-                                    nameType={'first'}
-                                />
-                                <NameField
-                                    name={lastName}
-                                    setName={setLastName}
-                                    validName={validLastName}
-                                    nameFocus={lastNameFocus}
-                                    setNameFocus={setLastNameFocus}
-                                    nameType={'last'}
-                                />
+                                <NameField nameType={'first'} />
+                                <NameField nameType={'last'} />
                             </Stack>
-                            <EmailField
-                                email={email}
-                                setEmail={setEmail}
-                                validEmail={validEmail}
-                                emailFocus={emailFocus}
-                                setEmailFocus={setEmailFocus}
-                            />
-                            <PasswordField
-                                password={pwd}
-                                setPassword={setPwd}
-                                validPassword={validPwd}
-                                passwordFocus={pwdFocus}
-                                setPasswordFocus={setPwdFocus}
-                            />
-                            <MatchPasswordField
-                                password={pwd}
-                                matchPassword={matchPwd}
-                                setMatchPassword={setMatchPwd}
-                                validMatchPassword={validMatchPwd}
-                                matchPasswordFocus={matchPwdFocus}
-                                setMatchPasswordFocus={setMatchPwdFocus}
-                            />
+                            <EmailField />
+                            <PasswordField />
+                            <MatchPasswordField />
                             <Stack direction="row" spacing={2}>
-                                <RegionField
-                                    regions={regions}
-                                    selectedRegion={selectedRegion}
-                                    setSelectedRegion={setSelectedRegion}
-                                    setSelectedRegionCode={setSelectedRegionCode}
-                                />
-                                <CityField
-                                    cities={cities}
-                                    setCities={setCities}
-                                    selectedRegionCode={selectedRegionCode}
-                                    selectedCity={selectedCity}
-                                    setSelectedCity={setSelectedCity}
-                                />
-
+                                <RegionField />
+                                <CityField />
                             </Stack>
-
-                            <DateField
-                                date={date}
-                                setDate={setDate}
-                            />
+                            <DateField />
                             {displayInfoBox &&
-                                <Alert
-
-                                    severity={succes ? "success" : "error"}
-                                >
-                                    {succes ? "Successfully registered" : "Failed registration"}
+                                <Alert severity={succes ? "success" : "error"}>
+                                    {succes ? "Successfully registered" : `${errMsg}`}
                                 </Alert>}
                             <Button
                                 variant='contained'
@@ -259,8 +159,8 @@ const Register = () => {
                                         !validFirstName ||
                                         !validLastName ||
                                         !validEmail ||
-                                        !validPwd ||
-                                        !validMatchPwd ||
+                                        !validPassword ||
+                                        !validMatchPassword ||
                                         !selectedRegion ||
                                         !selectedCity ||
                                         !date)}
@@ -268,7 +168,6 @@ const Register = () => {
                             >
                                 Register
                             </Button>
-
                         </Stack>
                     </Box>
                 </Paper>
@@ -276,4 +175,5 @@ const Register = () => {
         </LocalizationProvider>
     );
 }
+
 export default Register;
