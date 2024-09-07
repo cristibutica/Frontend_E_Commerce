@@ -1,8 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import api from './api/location';
 import { MenuItem, TextField } from '@mui/material';
+import RegisterContext from '../context/RegisterContext';
 
-const CityField = ({ cities, setCities, selectedRegionCode, selectedCity, setSelectedCity }) => {
+const CityField = () => {
+
+    const { selectedRegionCode, selectedCity, setSelectedCity } = useContext(RegisterContext);
+    const [cities, setCities] = useState([]);
 
     useEffect(() => {
         const fetchCities = async () => {
