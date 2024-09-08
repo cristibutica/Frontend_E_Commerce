@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import api from './api/location';
+import api from '../api/location';
 import { MenuItem, TextField } from '@mui/material';
 import RegisterContext from '../context/RegisterContext';
 
