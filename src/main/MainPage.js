@@ -1,14 +1,14 @@
-import React from 'react'
+import React from 'react';
+import {Link} from 'react-router-dom';
 
 const MainPage = () => {
   return (
     <form>
-      <p>gsdgsodngiosdgns</p>
-      <form><p>asdfgasfafasfgasas</p></form>
-      <p>gsdgsodgiosdgns</p>
-      <p>gsdgsodgiosdgns</p>
-      <p>a</p>
-      <p>a</p>
+      <h2>This is the main page</h2>
+      <ul>
+        <Link to="/register">Register</Link>
+        <Link to="/login">Login</Link>
+      </ul>
     </form>
   )
 }
