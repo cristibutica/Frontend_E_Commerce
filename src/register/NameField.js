@@ -1,10 +1,10 @@
 import React, { useContext, useState } from 'react'
 import TextField from '@mui/material/TextField';
-import RegisterContext from '../context/RegisterContext';
+import GlobalContext from '../context/GlobalContext';
 
 const NameField = ({ nameType }) => {
     
-    const { firstName, setFirstName, validFirstName, lastName, setLastName, validLastName } = useContext(RegisterContext);
+    const { firstName, setFirstName, validFirstName, lastName, setLastName, validLastName } = useContext(GlobalContext);
     const [firstNameFocus, setFirstNameFocus] = useState(false);
     const [lastNameFocus, setLastNameFocus] = useState(false);
 

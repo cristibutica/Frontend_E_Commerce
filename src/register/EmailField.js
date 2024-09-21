@@ -1,10 +1,10 @@
 import React, { useContext, useState } from 'react'
 import TextField from '@mui/material/TextField';
-import RegisterContext from '../context/RegisterContext';
+import GlobalContext from '../context/GlobalContext';
 
 const EmailField = () => {
 
-    const { email, setEmail, validEmail } = useContext(RegisterContext);
+    const { email, setEmail, validEmail } = useContext(GlobalContext);
     const [emailFocus, setEmailFocus] = useState(false);
 
     return (

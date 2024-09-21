@@ -18,7 +18,8 @@ import axios from '../api/axios';
 import CityField from './CityField';
 import MatchPasswordField from './MatchPasswordField';
 import DateField from './DateField';
-import RegisterContext from '../context/RegisterContext';
+import GlobalContext from '../context/GlobalContext';
+import { useNavigate } from 'react-router';
 
 const firstAndLastNameRegex = /^[A-Z][a-z]{2,23}$/;
 const userRegex = /^[a-zA-Z][a-zA-Z0-9-_]{3,23}$/;
@@ -27,11 +28,11 @@ const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 const registerURL = '/register'
 
 const Register = () => {
-    const { userRef, user, setUser, validUser, setValidUser, firstName, setFirstName, validFirstName, setValidFirstName, lastName, setLastName, validLastName, setValidLastName, email, setEmail, validEmail, setValidEmail, password, setPassword, validPassword, setValidPassword, matchPassword, setMatchPassword, validMatchPassword, setValidMatchPassword, regions, setRegions, selectedRegion, setSelectedRegion, selectedRegionCode, setSelectedRegionCode, selectedCity, setSelectedCity, date, setDate } = useContext(RegisterContext)
-
-    const [errMsg, setErrMsg] = useState('');
+    const { userRef, user, setUser, validUser, setValidUser, firstName, setFirstName, validFirstName, setValidFirstName, lastName, setLastName, validLastName, setValidLastName, email, setEmail, validEmail, setValidEmail, password, setPassword, validPassword, setValidPassword, matchPassword, setMatchPassword, validMatchPassword, setValidMatchPassword, regions, setRegions, selectedRegion, setSelectedRegion, selectedRegionCode, setSelectedRegionCode, selectedCity, setSelectedCity, date, setDate,displayInfoBox, setDisplayInfoBox, errMsg, setErrMsg } = useContext(GlobalContext)
+    
     const [succes, setSucces] = useState(false);
-    const [displayInfoBox, setDisplayInfoBox] = useState(false);
+    
+    const navigate = useNavigate();
 
     useEffect(() => {
         setValidUser(userRegex.test(user));
@@ -114,7 +115,12 @@ const Register = () => {
                 setErrMsg('Registration Failed');
             }
         })
-        
+
+    }
+
+    const handleAlreadyReg = (e) => {
+        e.preventDefault();
+        navigate('/login')
     }
 
     return (
@@ -167,6 +173,12 @@ const Register = () => {
                                 onClick={handleRegistration}
                             >
                                 Register
+                            </Button>
+                            <Button
+                                variant='contained'
+                                onClick={handleAlreadyReg}
+                            >
+                                Already registered? Login
                             </Button>
                         </Stack>
                     </Box>

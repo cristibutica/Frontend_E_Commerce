@@ -1,12 +1,12 @@
 import React, { useContext } from 'react';
 import { useRef, useState, useEffect } from "react";
 import TextField from '@mui/material/TextField';
-import LoginContext from '../context/LoginContext';
+import GlobalContext from '../context/GlobalContext';
 
 const UserField = () => {
 
     const [userFocus, setUserFocus] = useState(false);
-    const { userRef, user, setUser } = useContext(LoginContext)
+    const { userRef, user, setUser } = useContext(GlobalContext)
 
     return (
         <TextField

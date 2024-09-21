@@ -1,11 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react';
 import api from '../api/location';
 import { MenuItem, TextField } from '@mui/material';
-import RegisterContext from '../context/RegisterContext';
+import GlobalContext from '../context/GlobalContext';
 
 const CityField = () => {
 
-    const { selectedRegionCode, selectedCity, setSelectedCity } = useContext(RegisterContext);
+    const { selectedRegionCode, selectedCity, setSelectedCity } = useContext(GlobalContext);
     const [cities, setCities] = useState([]);
 
     useEffect(() => {
