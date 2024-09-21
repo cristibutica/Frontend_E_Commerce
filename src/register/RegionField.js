@@ -1,11 +1,11 @@
 import React, { useContext } from 'react'
 
 import { MenuItem, TextField } from '@mui/material'
-import RegisterContext from '../context/RegisterContext'
+import GlobalContext from '../context/GlobalContext'
 
 const RegionField = () => {
 
-  const { regions, setSelectedRegionCode, selectedRegion, setSelectedRegion } = useContext(RegisterContext);
+  const { regions, setSelectedRegionCode, selectedRegion, setSelectedRegion } = useContext(GlobalContext);
 
   const handleChange = (e) => {
     const selectedRegionObj = regions.find(region => region.nume === e.target.value);

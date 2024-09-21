@@ -1,11 +1,11 @@
 import { Visibility, VisibilityOff } from '@mui/icons-material'
 import { FormControl, FormHelperText, IconButton, InputAdornment, InputLabel, OutlinedInput } from '@mui/material'
 import React, { useContext, useState } from 'react'
-import RegisterContext from '../context/RegisterContext'
+import GlobalContext from '../context/GlobalContext'
 
 const MatchPasswordField = () => {
 
-    const { password, matchPassword, setMatchPassword, validMatchPassword } = useContext(RegisterContext);
+    const { password, matchPassword, setMatchPassword, validMatchPassword } = useContext(GlobalContext);
     const [showPassword, setShowPassword] = useState(false);
     const [matchPasswordFocus, setMatchPasswordFocus] = useState(false);
 

@@ -1,24 +1,29 @@
 import Register from "./register/Register";
-import { RegisterProvider } from "./context/RegisterContext";
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import Header from "./header/Header";
 import MainPage from "./main/MainPage";
-
-import { LoginProvider } from "./context/LoginContext";
 import Login from "./login/Login";
-import {AuthProvider } from "./context/AuthContext";
+import { GlobalProvider } from "./context/GlobalContext";
+import UserField from "./register/UserField";
+import UserInfo from "./header/UserInfo";
+import AuthGuard from "./context/AuthGuard";
 
 function App() {
   return (
     <main className="App">
-      <AuthProvider>
-        <Router>
+
+      <Router>
+        <GlobalProvider>
+          <Header />
           <Routes>
-            <Route path='/register' element={<RegisterProvider><Register /></RegisterProvider>} />
-            <Route path='/login' element={<LoginProvider><Login /></LoginProvider>} />
-            <Route path='/' element={<MainPage></MainPage>} />
+            <Route path='/register' element={<GlobalProvider><Register /></GlobalProvider>} />
+            <Route path='/login' element={<GlobalProvider><Login /></GlobalProvider>} />
+            <Route path='/' element={<MainPage />} />
+            <Route path='/user/myaccount' element={<AuthGuard><UserInfo /></AuthGuard>} />
           </Routes>
-        </Router>
-      </AuthProvider>
+        </GlobalProvider>
+      </Router>
+
     </main>
   );
 }
