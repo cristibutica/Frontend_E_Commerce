@@ -1,5 +1,5 @@
 import { jwtDecode } from "jwt-decode";
-import { createContext, useEffect, useRef, useState } from "react";
+import { createContext, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import api from '../api/location';
 
@@ -47,6 +47,7 @@ export const GlobalProvider = ({ children }) => {
     const [selectedRegionCode, setSelectedRegionCode] = useState('');
 
     const [selectedCity, setSelectedCity] = useState('');
+    const [cities, setCities] = useState([]);
 
     // month apparently starts from 0 so pay attention
     // $D, $M, $y
@@ -68,6 +69,40 @@ export const GlobalProvider = ({ children }) => {
             }
         }
     }
+
+    const fetchCities = async () => {
+        if (selectedRegionCode) {
+            try {
+                const response = await api.get(`orase/${selectedRegionCode}`);
+                setCities(response.data);
+                console.log(cities);
+            } catch (err) {
+                if (err.response) {
+                    console.log(err.response.data);
+                    console.log(err.response.status);
+                    console.log(err.response.headers);
+                } else {
+                    console.log(`Error: ${err.message}`);
+                }
+            }
+        }
+    };
+
+    const cachedCity = useMemo(() => {
+        if(selectedCity == null){
+            fetchCities();
+        }
+        return selectedCity
+    },[selectedCity]);
+
+    const cachedRegions = useMemo(() => {
+        if (regions.length === 0) {
+            fetchRegions();
+        }
+        return regions;
+    }, [regions]);
+
+
 
     useEffect(() => {
 
@@ -110,7 +145,7 @@ export const GlobalProvider = ({ children }) => {
     return (
         <GlobalContext.Provider value={{
             token, setToken, isAuth, setIsAuth, displayInfoBox, setDisplayInfoBox, errMsg, setErrMsg, userRef, user, setUser, validUser, setValidUser, firstName, setFirstName, validFirstName, setValidFirstName, lastName, setLastName, validLastName, setValidLastName, email, setEmail, validEmail, setValidEmail, password, setPassword, validPassword, setValidPassword, matchPassword, setMatchPassword, validMatchPassword, setValidMatchPassword, regions, setRegions, selectedRegion, setSelectedRegion
-            , selectedRegionCode, setSelectedRegionCode, selectedCity, setSelectedCity, date, setDate, navigate, userRegex, firstAndLastNameRegex, emailRegex, passwordRegex, registerURL,fetchRegions
+            , selectedRegionCode, setSelectedRegionCode, selectedCity, setSelectedCity, date, setDate, navigate, userRegex, firstAndLastNameRegex, emailRegex, passwordRegex, registerURL,cachedRegions, cachedCity
         }}>
             {children}
         </GlobalContext.Provider>

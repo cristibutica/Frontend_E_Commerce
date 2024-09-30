@@ -16,14 +16,7 @@ const updateUserURL = '/user/myaccount';
 
 const UserInfo = () => {
 
-    
-
-    const { token, setErrMsg, setDisplayInfoBox, displayInfoBox, user, setUser, setValidUser, firstName, setFirstName, setValidFirstName, lastName, setLastName, setValidLastName, email, setEmail, setValidEmail, setPassword, setRegion, setCity, setDate, userRegex, firstAndLastNameRegex, emailRegex, passwordRegex, registerURL,navigate,fetchRegions } = useContext(GlobalContext);
-
-    // const cachedRegionsAndCity = useMemo(
-       
-    //     () => 
-    // )
+    const { token, setErrMsg, setDisplayInfoBox, displayInfoBox, user, setUser, setValidUser, firstName, setFirstName, setValidFirstName, lastName, setLastName, setValidLastName, email, setEmail, setValidEmail, setPassword,region, setRegion, setCity, setDate, userRegex, firstAndLastNameRegex, emailRegex, passwordRegex, registerURL,navigate,cachedRegions } = useContext(GlobalContext);
 
     const [succes, setSucces] = useState(false);
 
