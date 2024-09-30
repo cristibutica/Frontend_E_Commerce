@@ -73,7 +73,8 @@ export default function Header() {
     setAnchorEl(null);
   };
 
-  const handleOpenProfile = () =>{
+  const handleOpenProfile = (e) =>{
+    
     navigate('/user/myaccount')
   }
 
