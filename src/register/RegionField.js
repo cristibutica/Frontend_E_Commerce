@@ -9,11 +9,11 @@ const RegionField = () => {
 
   const handleChange = (e) => {
     const selectedRegionObj = regions.find(region => region.nume === e.target.value);
-
-    if (selectedRegionObj) {
-      setSelectedRegion(selectedRegionObj.nume);
-      setSelectedRegionCode(selectedRegionObj.auto);
-    }
+    
+        if (selectedRegionObj) {
+          setSelectedRegion(selectedRegionObj.nume);
+          setSelectedRegionCode(selectedRegionObj.auto);
+        }
   }
 
   return (

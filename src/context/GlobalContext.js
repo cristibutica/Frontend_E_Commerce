@@ -13,7 +13,7 @@ export const GlobalProvider = ({ children }) => {
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
     const registerURL = '/register'
 
-    const [token, setToken] = useState(localStorage.getItem('token') || null );
+    const [token, setToken] = useState(localStorage.getItem('token') || null);
 
     const [isAuth, setIsAuth] = useState(false);
 
@@ -46,6 +46,7 @@ export const GlobalProvider = ({ children }) => {
     const [selectedRegion, setSelectedRegion] = useState('');
     const [selectedRegionCode, setSelectedRegionCode] = useState('');
 
+    const [cities, setCities] = useState([]);
     const [selectedCity, setSelectedCity] = useState('');
 
     // month apparently starts from 0 so pay attention
@@ -54,63 +55,103 @@ export const GlobalProvider = ({ children }) => {
 
     const navigate = useNavigate();
 
-    const fetchRegions = async () => {
-        try {
-            const response = await api.get(`judete`);
-            setRegions(response.data);
-            console.log(regions);
+    useEffect(() => {
+        const fetchRegions = async () => {
+            try {
+                const response = await api.get(`judete`);
+                setRegions(response.data);
+                console.log(regions);
 
-        } catch (err) {
-            if (err.response) {
-                console.log(`Error: ${err.response.data}`);
-            } else {
-                console.log(`Error: ${err.message}`);
+            } catch (err) {
+                if (err.response) {
+                    console.log(`Error: ${err.response.data}`);
+                } else {
+                    console.log(`Error: ${err.message}`);
+                }
             }
         }
-    }
+        fetchRegions();
+    }, [selectedRegion])
 
     useEffect(() => {
+        const fetchCities = async () => {
+            console.log(selectedRegionCode);
 
+            if (selectedRegionCode) {
+                try {
+                    const response = await api.get(`orase/${selectedRegionCode}`);
+                    setCities(response.data);
+                    console.log(cities);
+                } catch (err) {
+                    if (err.response) {
+                        console.log(err.response.data);
+                        console.log(err.response.status);
+                        console.log(err.response.headers);
+                    } else {
+                        console.log(`Error: ${err.message}`);
+                    }
+                }
+            }
+        };
+
+        fetchCities();
+    }, [selectedRegionCode]);
+
+    useEffect(() => {
+        const setRegionCode = () => {
+            const selectedRegionObj = regions.find(region => region.nume === selectedRegion);
+
+            if (selectedRegionObj) {
+                setSelectedRegionCode(selectedRegionObj.auto);
+            }
+        }
+        setRegionCode();
+    }, [selectedRegion])
+
+  
+
+    useEffect(() => {
         const handleAuthentication = () => {
-
             if (token) {
-                console.log(token);
+                const { exp } = jwtDecode(token);
 
-                const decodedToken = jwtDecode(token);
-                console.log(decodedToken);
-
+                const expirationTime = exp * 1000;
                 const currentTime = Date.now();
-                console.log(currentTime);
 
-                const tokenExpTime = decodedToken.exp * 1000;
-
-                console.log(tokenExpTime);
-
-                if (currentTime > tokenExpTime) {
-                    setIsAuth(false);
-                    localStorage.removeItem('token');
-                    setToken("");
-                } else {
+                if (expirationTime > currentTime) {
                     setIsAuth(true);
+                    localStorage.setItem("isAuth", true);
+                    const timeUntilExpiration = expirationTime - currentTime;
+                    const refreshTimeout = setTimeout(() => {
+                        console.log("Aceess token has expired, refreshing...");
+                        setIsAuth(false);
+                        setToken(null);
+                        localStorage.removeItem("token");
+                        localStorage.removeItem("isAuth");
+                    }, timeUntilExpiration - 60000);
+
+                    return () => clearTimeout(refreshTimeout);
+                } else {
+                    console.log("Access token has expired");
+                    setIsAuth(false);
+                    setToken(null);
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("isAuth");
                 }
             } else {
                 setIsAuth(false);
-                setToken("");
-
-               
+                localStorage.removeItem("isAuth");
             }
-
-        }
+        };
 
         handleAuthentication();
-
     }, [token]);
 
 
     return (
         <GlobalContext.Provider value={{
             token, setToken, isAuth, setIsAuth, displayInfoBox, setDisplayInfoBox, errMsg, setErrMsg, userRef, user, setUser, validUser, setValidUser, firstName, setFirstName, validFirstName, setValidFirstName, lastName, setLastName, validLastName, setValidLastName, email, setEmail, validEmail, setValidEmail, password, setPassword, validPassword, setValidPassword, matchPassword, setMatchPassword, validMatchPassword, setValidMatchPassword, regions, setRegions, selectedRegion, setSelectedRegion
-            , selectedRegionCode, setSelectedRegionCode, selectedCity, setSelectedCity, date, setDate, navigate, userRegex, firstAndLastNameRegex, emailRegex, passwordRegex, registerURL,fetchRegions
+            , selectedRegionCode, setSelectedRegionCode, selectedCity, setSelectedCity, date, setDate, navigate, userRegex, firstAndLastNameRegex, emailRegex, passwordRegex, registerURL, cities
         }}>
             {children}
         </GlobalContext.Provider>

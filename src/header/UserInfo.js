@@ -11,6 +11,7 @@ import CityField from '../register/CityField';
 import DateField from '../register/DateField';
 import axios from '../api/axios';
 import GlobalContext from '../context/GlobalContext';
+import dayjs from 'dayjs';
 
 const updateUserURL = '/user/myaccount';
 
@@ -18,7 +19,7 @@ const UserInfo = () => {
 
     
 
-    const { token, setErrMsg, setDisplayInfoBox, displayInfoBox, user, setUser, setValidUser, firstName, setFirstName, setValidFirstName, lastName, setLastName, setValidLastName, email, setEmail, setValidEmail, setPassword, setRegion, setCity, setDate, userRegex, firstAndLastNameRegex, emailRegex, passwordRegex, registerURL,navigate,fetchRegions } = useContext(GlobalContext);
+    const { token, setErrMsg, setDisplayInfoBox, displayInfoBox, user, setUser, setValidUser, firstName, setFirstName, setValidFirstName, lastName, setLastName, setValidLastName, email, setEmail, setValidEmail, setPassword, setSelectedRegion, setSelectedCity, setDate, userRegex, firstAndLastNameRegex, emailRegex, passwordRegex, registerURL,navigate,fetchRegions } = useContext(GlobalContext);
 
     // const cachedRegionsAndCity = useMemo(
        
@@ -64,9 +65,9 @@ const UserInfo = () => {
                 setFirstName(data.firstName);
                 setLastName(data.lastName);
                 setEmail(data.email);
-                setRegion(data.region);
-                setCity(data.city);
-                setDate(data.dateOfBirth)
+                setSelectedRegion(data.region);
+                setSelectedCity(data.city);
+                setDate(dayjs(data.dateOfBirth))
                 // Setează datele utilizatorului în starea locală
             } catch (err) {
                 setDisplayInfoBox(true);
