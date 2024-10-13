@@ -5,7 +5,7 @@ import GlobalContext from '../context/GlobalContext'
 
 const RegionField = () => {
 
-  const { cachedRegions, setSelectedRegionCode, selectedRegion, setSelectedRegion } = useContext(GlobalContext);
+  const { regions, setSelectedRegionCode, selectedRegion, setSelectedRegion } = useContext(GlobalContext);
 
   const handleChange = (e) => {
 
@@ -30,7 +30,7 @@ const RegionField = () => {
         selectedRegion ? "" : "Please select your region"
       }
     >
-      {cachedRegions.sort((a, b) => a.nume.localeCompare(b.nume)).map((region) => (
+      {regions.sort((a, b) => a.nume.localeCompare(b.nume)).map((region) => (
         <MenuItem key={region.auto} value={region.nume}>
           {region.nume}
         </MenuItem>

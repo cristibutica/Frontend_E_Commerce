@@ -48,7 +48,6 @@ export const GlobalProvider = ({ children }) => {
 
     const [cities, setCities] = useState([]);
     const [selectedCity, setSelectedCity] = useState('');
-    const [cities, setCities] = useState([]);
 
     // month apparently starts from 0 so pay attention
     // $D, $M, $y
@@ -91,22 +90,6 @@ export const GlobalProvider = ({ children }) => {
             }
         }
     };
-
-    const cachedCity = useMemo(() => {
-        if(selectedCity == null){
-            fetchCities();
-        }
-        return selectedCity
-    },[selectedCity]);
-
-    const cachedRegions = useMemo(() => {
-        if (regions.length === 0) {
-            fetchRegions();
-        }
-        return regions;
-    }, [regions]);
-
-
 
     useEffect(() => {
         const fetchCities = async () => {
