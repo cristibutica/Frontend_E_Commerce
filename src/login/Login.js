@@ -32,8 +32,11 @@ const Login = () => {
             setIsAuth(true);
             setDisplayInfoBox(false);
             console.log(response.data);
-            
+
             navigate("/");
+            window.location.reload();
+
+
         }).catch(err => {
             setDisplayInfoBox(true);
             setIsAuth(false);

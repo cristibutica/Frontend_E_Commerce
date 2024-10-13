@@ -5,30 +5,9 @@ import GlobalContext from '../context/GlobalContext';
 
 const CityField = () => {
 
-    const { selectedRegionCode, selectedCity, setSelectedCity } = useContext(GlobalContext);
-    const [cities, setCities] = useState([]);
+    const { cities, selectedCity, setSelectedCity } = useContext(GlobalContext);
 
-    useEffect(() => {
-        const fetchCities = async () => {
-            if (selectedRegionCode) {
-                try {
-                    const response = await api.get(`orase/${selectedRegionCode}`);
-                    setCities(response.data);
-                    console.log(cities);
-                } catch (err) {
-                    if (err.response) {
-                        console.log(err.response.data);
-                        console.log(err.response.status);
-                        console.log(err.response.headers);
-                    } else {
-                        console.log(`Error: ${err.message}`);
-                    }
-                }
-            }
-        };
-
-        fetchCities();
-    }, [selectedRegionCode]);
+    
 
     // if there is already a city in the seenCity set, return false so that it doesn't add the duplicate city in the cities
     const uniqueCities = (cities) => {

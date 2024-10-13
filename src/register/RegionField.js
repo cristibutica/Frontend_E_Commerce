@@ -8,12 +8,14 @@ const RegionField = () => {
   const { cachedRegions, setSelectedRegionCode, selectedRegion, setSelectedRegion } = useContext(GlobalContext);
 
   const handleChange = (e) => {
-    const selectedRegionObj = cachedRegions.find(region => region.nume === e.target.value);
 
-    if (selectedRegionObj) {
-      setSelectedRegion(selectedRegionObj.nume);
-      setSelectedRegionCode(selectedRegionObj.auto);
-    }
+    const selectedRegionObj = regions.find(region => region.nume === e.target.value);
+    
+        if (selectedRegionObj) {
+          setSelectedRegion(selectedRegionObj.nume);
+          setSelectedRegionCode(selectedRegionObj.auto);
+        }
+
   }
 
   return (
