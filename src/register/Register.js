@@ -21,14 +21,8 @@ import DateField from './DateField';
 import GlobalContext from '../context/GlobalContext';
 import { useNavigate } from 'react-router';
 
-const firstAndLastNameRegex = /^[A-Z][a-z]{2,23}$/;
-const userRegex = /^[a-zA-Z][a-zA-Z0-9-_]{3,23}$/;
-const emailRegex = /^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$/;
-const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
-const registerURL = '/register'
-
 const Register = () => {
-    const { userRef, user, setUser, validUser, setValidUser, firstName, setFirstName, validFirstName, setValidFirstName, lastName, setLastName, validLastName, setValidLastName, email, setEmail, validEmail, setValidEmail, password, setPassword, validPassword, setValidPassword, matchPassword, setMatchPassword, validMatchPassword, setValidMatchPassword, regions, setRegions, selectedRegion, setSelectedRegion, selectedRegionCode, setSelectedRegionCode, selectedCity, setSelectedCity, date, setDate,displayInfoBox, setDisplayInfoBox, errMsg, setErrMsg } = useContext(GlobalContext)
+    const { userRef, user, setUser, validUser, setValidUser, firstName, setFirstName, validFirstName, setValidFirstName, lastName, setLastName, validLastName, setValidLastName, email, setEmail, validEmail, setValidEmail, password, setPassword, validPassword, setValidPassword, matchPassword, setMatchPassword, validMatchPassword, setValidMatchPassword, regions, setRegions, selectedRegion, setSelectedRegion, selectedRegionCode, setSelectedRegionCode, selectedCity, setSelectedCity, date, setDate,displayInfoBox, setDisplayInfoBox, errMsg, setErrMsg,cachedRegions,userRegex,firstAndLastNameRegex,emailRegex,passwordRegex,registerURL } = useContext(GlobalContext)
     
     const [succes, setSucces] = useState(false);
     
@@ -59,25 +53,6 @@ const Register = () => {
         setErrMsg('');
         setDisplayInfoBox(false);
     }, [user, firstName, lastName, email, password, matchPassword]);
-
-    useEffect(() => {
-        const fetchRegions = async () => {
-            try {
-                const response = await api.get(`judete`);
-                setRegions(response.data);
-                console.log(regions);
-
-            } catch (err) {
-                if (err.response) {
-                    console.log(`Error: ${err.response.data}`);
-                } else {
-                    console.log(`Error: ${err.message}`);
-                }
-            }
-        }
-
-        fetchRegions();
-    }, [])
 
     const handleRegistration = async (e) => {
         e.preventDefault();

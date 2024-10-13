@@ -15,9 +15,7 @@ import dayjs from 'dayjs';
 
 const updateUserURL = '/user/myaccount';
 
-const UserInfo = () => {
-
-    
+const UserInfo = () => {   
 
     const { token, setErrMsg, setDisplayInfoBox, displayInfoBox, user, setUser, setValidUser, firstName, setFirstName, setValidFirstName, lastName, setLastName, setValidLastName, email, setEmail, setValidEmail, setPassword, setSelectedRegion, setSelectedCity, setDate, userRegex, firstAndLastNameRegex, emailRegex, passwordRegex, registerURL,navigate,fetchRegions } = useContext(GlobalContext);
 
